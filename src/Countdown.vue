@@ -1,20 +1,20 @@
 <template>
-    <ul class="vuejs-countdown">
+    <ul class="vuejs-countdown" :class="{'reverse-menu': rtl}">
         <li v-if="days > 0">
             <p class="digit">{{ days | twoDigits }}</p>
-            <p class="text">{{ days > 1 ? 'days' : 'day' }}</p>
+            <p class="text">{{ text[0] }}</p>
         </li>
         <li>
             <p class="digit">{{ hours | twoDigits }}</p>
-            <p class="text">{{ hours > 1 ? 'hours' : 'hour' }}</p>
+            <p class="text">{{ text[1] }}</p>
         </li>
         <li>
             <p class="digit">{{ minutes | twoDigits }}</p>
-            <p class="text">min</p>
+            <p class="text">{{ text[2] }}</p>
         </li>
         <li>
             <p class="digit">{{ seconds | twoDigits }}</p>
-            <p class="text">Sec</p>
+            <p class="text">{{ text[3] }}</p>
         </li>
     </ul>
 </template>
@@ -33,13 +33,20 @@ export default {
         },
         stop: {
             type: Boolean
+        }, 
+        labels: {
+            type: String
+        },
+        rtl: {
+            type: Boolean
         }
     },
     data() {
         return {
             now: Math.trunc((new Date()).getTime() / 1000),
             date: null,
-            diff: 0
+            diff: 0,
+            text: []
         }
     },
     created() {
@@ -57,6 +64,12 @@ export default {
         interval = setInterval(() => {
             this.now = Math.trunc((new Date()).getTime() / 1000);
         }, 1000);
+
+        this.text = this.labels.split('/,-\s/');
+        
+        if (this.rtl) {
+            this.reverseClass = 'reverse-menu'
+        }
     },
     computed: {
         seconds() {
@@ -99,6 +112,12 @@ export default {
 }
 </script>
 <style>
+.reverse-menu {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-items: center;
+    align-items: center;
+}
 .vuejs-countdown {
   padding: 0;
   margin: 0;
